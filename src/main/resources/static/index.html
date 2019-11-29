@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Java生成随机图片验证码</title>
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+</head>
+<body>
+        <h3>验证码请求方法1</h3>
+        <div >
+            <input type="tel" id="verify_input" placeholder="请输入验证码" maxlength="4">
+        </div>
+        <div>
+            <a href="javascript:void(0);" rel="external nofollow" title="点击更换验证码">
+                <img id="imgVerify" src="login/getVerify" alt="更换验证码" height="36" width="170" onclick="getVerify(this);">
+            </a>
+        </div>
+        <br/>
+        <input type="button" onclick="aVerify()" value="提交"> <br/>
+
+
+
+        <h3>验证码请求方法2</h3>
+        <input type="text" id="validateCode" placeholder="数字字母混合验证码"/><br/>
+        <img alt="验证码看不清，换一张" src="CheckServlet/DrawImage?createTypeFlag=nl" id="validateCodeImg1" onclick="changeImg('nl')">
+        <br/>
+        <input type="button" onclick="changeImgVerify()" value="验证">
+       <!--中文验证码：<input type="text" name="validateCode"/>-->
+       <!--<img alt="验证码看不清，换一张" src="CheckServlet/DrawImage?createTypeFlag=ch" id="validateCodeImg2" onclick="changeImg('ch')">-->
+       <!--<br/>-->
+       <!--英文验证码：<input type="text" name="validateCode"/>-->
+       <!--<img alt="验证码看不清，换一张" src="CheckServlet/DrawImage?createTypeFlag=l" id="validateCodeImg3" onclick="changeImg('l')">-->
+       <!--<br/>-->
+       <!--数字验证码：<input type="text" name="validateCode"/>-->
+       <!--<img alt="验证码看不清，换一张" src="CheckServlet/DrawImage?createTypeFlag=n" id="validateCodeImg4" onclick="changeImg('n')">-->
+       <!--<br/>-->
+
+<!--js中的代码-->
+<script>
+
+
+    //验证码请求方法二
+    function getVerify() {
+        $("#imgVerify").attr("src", 'login/getVerify?' + Math.random());//jquery方式
+    }
+
+    function aVerify(){
+        var value =$("#verify_input").val();
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'login/checkVerify',
+            dataType: "json",
+            data: {
+                verifyInput: value
+            },
+            success: function (result) {
+                if (result) {
+                    alert("success!");
+                } else {
+                    alert("failed!");
+                }
+                getVerify();
+            }
+        });
+    }
+
+
+    //验证码请求方法二
+    function changeImg(value){
+        $("#validateCodeImg1").attr("src", 'CheckServlet/DrawImage?createTypeFlag='+value+"&" + Math.random());//jquery方式
+    }
+
+
+
+    function changeImgVerify(){
+        var value =$("#validateCode").val();
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'CheckServlet/checkboolean',
+            dataType: "json",
+            data: {
+                validateCode: value
+            },
+            success: function (result) {
+                if (result) {
+                    alert("success!");
+                } else {
+                    alert("failed!");
+                }
+                changeImg('ch')
+            }
+        });
+    }
+</script>
+</body>
+</html>
